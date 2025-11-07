@@ -1,0 +1,76 @@
+.theme-toggle {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    text-align: center;
+    z-index: 100;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.toggle-label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: bold;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    background-color: #ccc;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.switch::after {
+    content: "";
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    background-color: white;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: 0.3s;
+}
+
+#theme-switch {
+    display: none;
+}
+
+#theme-switch:checked + .switch {
+    background-color: #007bff;
+}
+
+#theme-switch:checked + .switch::after {
+    transform: translateX(24px);
+}
+
+/* Dark Mode Overrides */
+body.dark-mode {
+    background-color: #1e1e1e;
+    color: #eee;
+}
+
+body.dark-mode header h1 {
+    color: #f9f9f9;
+}
+
+body.dark-mode input[type="url"],
+body.dark-mode select {
+    background-color: #2b2b2b;
+    color: #eee;
+    border: 1px solid #555;
+}
+
+body.dark-mode .message {
+    text-align: center;
+    color: #ddd;
+}
+
+body.dark-mode .toggle-label {
+    color: #ccc;
+}

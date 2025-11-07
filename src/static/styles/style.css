@@ -1,0 +1,72 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f9fb;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 2rem;
+    color: #333;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+header h1 {
+    color: #333;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 1rem;
+    width: 320px;
+}
+
+input[type="url"], select {
+    padding: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.message {
+    text-align: center;
+    color: #333;
+}
+
+button#download-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button#download-btn:hover {
+    background-color: #0056b3;
+}
+
+#download-btn.cancelling {
+    background-color: #ff4c4c;
+    border-color: #e04343;
+    color: #fff;
+}
+
+#download-btn.cancelling:hover {
+    background-color: #962d2d;
+}
+
+button#delete-archive-btn {
+    background-color: #ff4c4c;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button#delete-archive-btn:hover {
+    background-color: #962d2d;
+}

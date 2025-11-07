@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    	<meta charset="UTF-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    	<title>Media Downloader</title>
+		<link rel="icon" type="image/png" href="{% static 'images/site_logo.ico' %}">
+    
+    	<link rel="stylesheet" href="{% static 'styles/style.css' %}">
+    	<link rel="stylesheet" href="{% static 'components/ThemeToggle/theme_toggle.css' %}">
+    	<link rel="stylesheet" href="{% static 'components/ProgressBar/progress_bar.css' %}">
+		<link rel="stylesheet" href="{% static 'components/LoadingDots/loading_dots.css' %}">
+		<link rel="stylesheet" href="{% static 'components/MessageBox/message_box.css' %}">
+    </head>
+
+    <body>
+	    <header>
+	    	<h1>🎥 Media Downloader</h1>
+	    </header>
+
+	    <main>
+	    	<form id="download-form" style="margin: auto;">
+	    		{% csrf_token %}
+	    		<input type="url" id="url-input" name="url" placeholder="Enter video URL..." autocomplete="off" required>
+
+	    		<label for="download_type">Download Type:</label>
+	    		<select name="download_type" id="download_type">
+	    			<option value="audio" {% if selected_download_type == 'audio' %}selected{% endif %}>Audio Only</option>
+	    			<option value="video" {% if selected_download_type == 'video' %}selected{% endif %}>Video Only</option>
+	    			<option value="both" {% if selected_download_type == 'both' %}selected{% endif %}>Video + Audio</option>
+					<option value="urls" {% if selected_download_type == 'urls' %}selected{% endif %}>URLs</option>
+	    		</select>
+
+	    		<label for="audio_format">Audio Format:</label>
+	    		<select name="audio_format" id="audio_format">
+	    			<option value="default" {% if selected_audio_format == 'default' %}selected{% endif %}>Default / Auto</option>
+	    			<option value="mp3" {% if selected_audio_format == 'mp3' %}selected{% endif %}>MP3</option>
+	    			<option value="m4a" {% if selected_audio_format == 'm4a' %}selected{% endif %}>M4A</option>
+	    			<option value="wav" {% if selected_audio_format == 'wav' %}selected{% endif %}>WAV</option>
+	    			<option value="webm" {% if selected_audio_format == 'webm' %}selected{% endif %}>WEBM</option>
+	    		</select>
+
+	    		<label for="video_format">Video Format:</label>
+	    		<select name="video_format" id="video_format">
+	    			<option value="default" {% if selected_video_format == 'default' %}selected{% endif %}>Default / Auto</option>
+	    			<option value="mp4" {% if selected_video_format == 'mp4' %}selected{% endif %}>MP4</option>
+	    			<option value="mkv" {% if selected_video_format == 'mkv' %}selected{% endif %}>MKV</option>
+	    			<option value="webm" {% if selected_video_format == 'webm' %}selected{% endif %}>WEBM</option>
+	    		</select>
+
+	    		<label for="resolution">Video Resolution:</label>
+	    		<select name="resolution" id="resolution">
+	    			<option value="best" {% if selected_resolution == 'best' %}selected{% endif %}>Highest / Best</option>
+	    			<option value="144" {% if selected_resolution == '144' %}selected{% endif %}>144p</option>
+	    			<option value="240" {% if selected_resolution == '240' %}selected{% endif %}>240p</option>
+	    			<option value="360" {% if selected_resolution == '360' %}selected{% endif %}>360p</option>
+	    			<option value="480" {% if selected_resolution == '480' %}selected{% endif %}>480p</option>
+	    			<option value="720" {% if selected_resolution == '720' %}selected{% endif %}>720p</option>
+	    			<option value="1080" {% if selected_resolution == '1080' %}selected{% endif %}>1080p</option>
+	    			<option value="1440" {% if selected_resolution == '1440' %}selected{% endif %}>1440p</option>
+	    			<option value="2160" {% if selected_resolution == '2160' %}selected{% endif %}>4K</option>
+	    		</select>
+
+				<label for="archive_log">Archive Log:</label>
+				<div style="display: flex; align-items: center; gap: 8px;">
+				    <select name="archive_log" id="archive_log" style="flex: 1;">
+				        <option value="none" selected>None</option>
+				        <option value="new_file">Create New File...</option>
+				    </select>
+				    <button type="button" id="delete-archive-btn">Delete 🗑️</button>
+				</div>
+
+	    		<label for="mode">Throttle Mode:</label>
+	    		<select name="mode" id="mode">
+	    			<option value="none" selected>None</option>
+	    			<option value="archival">Archival [1MB/S]</option>
+	    			<option value="safest">Safest [3MB/S]</option>
+	    			<option value="balanced">Balanced [10MB/S]</option>
+	    			<option value="fastest">Fastest [30MB/S]</option>
+	    		</select>
+
+	    		<button type="submit" id="download-btn">Download ⬇️</button>
+	    	</form>
+
+	    	<div id="progress-container">
+	    		<div id="progress-bar">0%</div>
+	    	</div>
+
+	    	<p class="message"></p>
+			<div id="message-box">
+			  <span class="icon"></span>
+			  <div class="text"></div>
+			  <button id="message-close" aria-label="Close message">✕</button>
+			</div>
+
+			<div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 1rem;">
+			    <p id="downloading-text" style="margin: 0;"></p>
+			    <div class="loading-dots" id="loading-dots" style="display: none;">
+			        <span></span><span></span><span></span>
+			    </div>
+			</div>
+	    </main>
+
+	    <div class="theme-toggle">
+	    	<span class="toggle-label">🌞 / 🌙</span>
+	    	<input type="checkbox" id="theme-switch">
+	    	<label for="theme-switch" class="switch"></label>
+	    </div>
+
+	    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>window.DOWNLOAD_MESSAGES_URL = "{% static 'messages/download_messages.json' %}";</script>
+		<script src="{% static 'main.js' %}"></script>
+		<script src="{% static 'components/ThemeToggle/theme_toggle.js' %}"></script>
+	    <script src="{% static 'components/ProgressBar/progress_bar.js' %}"></script>
+        <script src="{% static 'components/ArchiveLog/archive_log.js' %}"></script>
+		<script src="{% static 'components/DownloadHandler/download_handler.js' %}"></script>
+		<script src="{% static 'components/LoadingDots/loading_dots.js' %}"></script>
+		<script src="{% static 'components/MessageBox/message_box.js' %}"></script>
+    </body>
+</html>

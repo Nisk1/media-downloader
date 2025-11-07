@@ -1,0 +1,16 @@
+# ----------------------------
+# ignore directories
+# ----------------------------
+
+**/__pycache__/
+logs/
+downloads/
+archives/
+
+# ----------------------------
+# ignore files
+# ----------------------------
+
+*.py[cod]
+db.sqlite3
+ToDo.txt
